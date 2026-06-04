@@ -41,6 +41,15 @@ export WANDB_API_KEY="YOUR_WANDB_API"
 bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh
 ```
 
+To cap the run at 500 steps and enable FSDP param/optimizer offload (works around the OOM described below) without editing the script:
+
+```bash
+EXPERIMENT_NAME=mi300x-qwen3_8b_grpo_vllm_fsdp bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh \
+  trainer.total_training_steps=500 \
+  actor_rollout_ref.actor.fsdp_config.param_offload=True \
+  actor_rollout_ref.actor.fsdp_config.optimizer_offload=True
+```
+
 ## Known issue: OOM at step 4
 
 With the stock `run_qwen3_8b_fsdp.sh` config, training completes steps 1–3 and then crashes during `update_actor` on step 4 with a HIP OOM:
