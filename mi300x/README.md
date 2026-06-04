@@ -40,3 +40,22 @@ python3 examples/data_preprocess/math_dataset.py --local_dir $HOME/data/math
 export WANDB_API_KEY="YOUR_WANDB_API"
 bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh
 ```
+
+## Known issue: OOM at step 4
+
+With the stock `run_qwen3_8b_fsdp.sh` config, training completes steps 1–3 and then crashes during `update_actor` on step 4 with a HIP OOM:
+
+```
+:0:rocdevice.cpp :3672: Callback: Queue ... Aborting with error :
+HSA_STATUS_ERROR_OUT_OF_RESOURCES: The runtime failed to allocate the necessary resources.
+... Available Free mem : 62 MB
+*** SIGABRT received ***
+```
+
+Ray then tears the job down with `ActorDiedError` on the worker that hit the OOM.
+
+Context from the run:
+- 8× MI300 (192 GB), colocated vLLM rollout + FSDP actor/ref on the same GPUs.
+- `actor/perf/max_memory_reserved_gb` holds ~179 GB between steps; `gpu_memory_utilization=0.6` reserves another large slab for vLLM KV cache.
+- ROCm logs `expandable_segments not supported on this platform`, so allocator fragmentation accumulates across steps until step 4 can no longer fit the actor update.
+- `save_freq=20` means no checkpoint exists yet when the crash happens — the run is lost.
