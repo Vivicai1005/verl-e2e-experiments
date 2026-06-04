@@ -40,12 +40,3 @@ python3 examples/data_preprocess/math_dataset.py --local_dir $HOME/data/math
 export WANDB_API_KEY="YOUR_WANDB_API"
 bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh
 ```
-
-To cap the run at 500 steps without editing the script:
-
-```bash
-EXPERIMENT_NAME=mi355x-qwen3_8b_grpo_vllm_fsdp bash examples/grpo_trainer/run_qwen3_8b_fsdp.sh \
-  trainer.total_training_steps=500
-```
-
-Unlike MI300, MI355 has enough HBM to run the stock config without FSDP param/optimizer offload, so no offload overrides are needed.
