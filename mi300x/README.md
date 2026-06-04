@@ -16,7 +16,7 @@ docker run -it --name verl --device /dev/kfd --device /dev/dri \
   --group-add video --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
   --shm-size=2048g \
   --ulimit memlock=-1 --ulimit stack=67108864 \
-  -w /workspace \
+  -w /workspace/verl \
   amdagi/training_ubuntu_rocm7.0.2_56_py312:verl_te2.10_vllm0.20_gfx942_950 \
   /bin/bash
 ```
