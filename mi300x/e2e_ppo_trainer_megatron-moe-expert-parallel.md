@@ -108,12 +108,7 @@ With `VANILLA_MBRIDGE=True`, `bridge`/`provider` are `None`, so the assertion
 fails. Even if it passed, `megatron.bridge.peft.utils` is not installed in the
 ROCm container.
 
-So this test cannot run with vanilla mbridge. To run it on MI300X you would
-need NVIDIA Megatron-Bridge working on ROCm:
-
-```bash
-pip3 install git+https://github.com/NVIDIA-NeMo/Megatron-Bridge.git@0a21da4 --no-deps --no-build-isolation
-```
+So this test cannot run with vanilla mbridge.
 
 (LoRA-specific args kept from the CI command: `LORA_RANK=8`,
 `CRITIC_LORA_RANK=8`, `LORA_MERGE=True`, and `COMMON_EP=2`.)
