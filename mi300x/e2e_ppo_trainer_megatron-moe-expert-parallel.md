@@ -146,3 +146,10 @@ So this test cannot run with vanilla mbridge.
 
 (LoRA-specific args kept from the CI command: `LORA_RANK=8`,
 `CRITIC_LORA_RANK=8`, `LORA_MERGE=True`, and `COMMON_EP=2`.)
+
+---
+
+## MI355X
+
+Tests (1) 3D parallelism with mbridge and (2) 3D parallelism with FP8 rollout +
+mbridge were also run on MI355X — both PASS.
