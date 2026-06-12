@@ -37,10 +37,10 @@ actor_clip_ratio_high=${ACTOR_CLIP_RATIO_HIGH:-0.28}
 actor_clip_ratio_c=${ACTOR_CLIP_RATIO_C:-10.0}
 actor_ppo_micro_batch_size_per_gpu=${ACTOR_PPO_MICRO_BATCH_SIZE_PER_GPU:-2}
 
-actor_tp=${ACTOR_TP:-4}
-actor_pp=${ACTOR_PP:-2}
+actor_tp=${ACTOR_TP:-1}
+actor_pp=${ACTOR_PP:-1}
 actor_vpp=${ACTOR_VPP:-2}
-actor_ep=${ACTOR_EP:-2}
+actor_ep=${ACTOR_EP:-8}
 actor_etp=${ACTOR_ETP:-1}
 actor_cp=${ACTOR_CP:-1}
 ref_tp=${REF_TP:-${actor_tp}}
@@ -80,6 +80,7 @@ test_freq=${TEST_FREQ:-5}
 
 project_name=${PROJECT_NAME:-verl_grpo_dapo_math}
 experiment_name=${EXPERIMENT_NAME:-qwen3_30b_a3b_${INFER_BACKEND}_megatron${ROLLOUT_QUANTIZATION:+_${ROLLOUT_QUANTIZATION}}}
+experiment_name=${experiment_name}_tp${actor_tp}ep${actor_ep}_gentp${infer_tp}
 ########################### end user-adjustable ###########################
 
 ########################### derived defaults ###########################
