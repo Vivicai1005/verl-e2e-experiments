@@ -53,12 +53,14 @@ all_offload=${ALL_OFFLOAD:-True}
 
 rollout_tp=${ROLLOUT_TP:-4}
 infer_tp=${INFER_TP:-${rollout_tp}}
-# vLLM rollout MoE: RolloutConfig asserts
-#   expert_parallel_size == tensor_model_parallel_size * data_parallel_size.
-# Rollout data_parallel_size defaults to 1 (not auto-derived), so EP == infer_tp.
+# vLLM rollout MoE parallelism. Default is OFF (gen_moe_ep=1) -> pure tensor
+# parallelism: experts are sharded implicitly inside the rollout TP group.
+# To enable rollout expert parallelism, set GEN_MOE_EP. Note RolloutConfig
+# asserts expert_parallel_size == rollout_TP * rollout_DP, and rollout
+# data_parallel_size defaults to 1, so when enabled EP must equal infer_tp.
 # moe_tensor_parallel_size is trtllm-only and ignored by vLLM.
 gen_moe_tp=${GEN_MOE_TP:-1}
-gen_moe_ep=${GEN_MOE_EP:-${infer_tp}}
+gen_moe_ep=${GEN_MOE_EP:-1}
 rollout_gpu_mem_util=${ROLLOUT_GPU_MEM_UTIL:-0.6}
 rollout_n=${ROLLOUT_N:-8}
 rollout_max_num_batched_tokens=${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-10240}
@@ -232,9 +234,16 @@ TRAINER=(
 EXTRA=(
     model_engine=megatron
     actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=${TRTLLM_UPDATE_WEIGHTS_BUCKET_MEGABYTES:-4096}
-    +actor_rollout_ref.rollout.moe_tensor_parallel_size=${gen_moe_tp}
-    actor_rollout_ref.rollout.expert_parallel_size=${gen_moe_ep}
 )
+
+# Rollout expert parallelism: only emit when explicitly enabled (>1); otherwise
+# leave it unset so vLLM serves the MoE with pure tensor parallelism.
+if [ "${gen_moe_ep}" -gt 1 ]; then
+    EXTRA+=(
+        +actor_rollout_ref.rollout.moe_tensor_parallel_size=${gen_moe_tp}
+        actor_rollout_ref.rollout.expert_parallel_size=${gen_moe_ep}
+    )
+fi
 
 if [ "${INFER_BACKEND}" = trtllm ]; then
     EXTRA+=(
