@@ -80,7 +80,7 @@ test_freq=${TEST_FREQ:-5}
 
 project_name=${PROJECT_NAME:-verl_grpo_dapo_math}
 experiment_name=${EXPERIMENT_NAME:-qwen3_30b_a3b_${INFER_BACKEND}_megatron${ROLLOUT_QUANTIZATION:+_${ROLLOUT_QUANTIZATION}}}
-experiment_name=${experiment_name}_tp${actor_tp}ep${actor_ep}_gentp${infer_tp}
+experiment_name=${experiment_name}_tp${actor_tp}ep${actor_ep}_infertp${infer_tp}
 ########################### end user-adjustable ###########################
 
 ########################### derived defaults ###########################
