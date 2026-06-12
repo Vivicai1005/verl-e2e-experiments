@@ -19,6 +19,26 @@ VLLM_DIR=/some/other/vllm bash ~/verl-e2e-experiments/patches/apply.sh
 `apply.sh` is idempotent: it skips patches already applied, uses `git apply`, and
 falls back to fuzzy `patch -p1 --fuzz=3` if vllm's line numbers have drifted.
 
+## Check if a patch is applied
+
+Ask git whether the patch could be *reversed* — if yes, it is already applied:
+
+```bash
+cd /workspace/vllm
+git apply --reverse --check ~/verl-e2e-experiments/patches/<name>.patch \
+  && echo "APPLIED" || echo "NOT applied"
+```
+
+- `git apply --reverse --check <patch>` succeeds → already applied
+- `git apply --check <patch>` succeeds → not yet applied (can apply forward)
+
+Or just re-run `apply.sh`: `[skip] ... (already applied)` means it is in place,
+`[ok] ...` means it was just applied now. To see all local edits at once:
+
+```bash
+cd /workspace/vllm && git diff
+```
+
 ## Record a new change
 
 Make the edit inside the container, then generate the diff straight from git so the
