@@ -53,8 +53,11 @@ all_offload=${ALL_OFFLOAD:-True}
 
 rollout_tp=${ROLLOUT_TP:-4}
 infer_tp=${INFER_TP:-${rollout_tp}}
-gen_moe_tp=${GEN_MOE_TP:-2}
-gen_moe_ep=${GEN_MOE_EP:-2}
+# vLLM rollout MoE: experts span the whole rollout world, so
+#   expert_parallel_size == rollout_tp * rollout_dp == total GPUs, and
+#   moe_tensor_parallel_size * expert_parallel_size == total GPUs => moe_tp = 1.
+gen_moe_tp=${GEN_MOE_TP:-1}
+gen_moe_ep=${GEN_MOE_EP:-$((NNODES * NGPUS_PER_NODE))}
 rollout_gpu_mem_util=${ROLLOUT_GPU_MEM_UTIL:-0.6}
 rollout_n=${ROLLOUT_N:-8}
 rollout_max_num_batched_tokens=${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-10240}
