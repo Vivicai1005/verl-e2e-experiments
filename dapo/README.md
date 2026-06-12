@@ -146,5 +146,3 @@ vLLM rollout generation → reward computation, no assertion errors, no OOM with
 ---
 
 # Qwen3.5-35B-A3B
-
-_Planned — to be added._
