@@ -53,11 +53,12 @@ all_offload=${ALL_OFFLOAD:-True}
 
 rollout_tp=${ROLLOUT_TP:-4}
 infer_tp=${INFER_TP:-${rollout_tp}}
-# vLLM rollout MoE: experts span the whole rollout world, so
-#   expert_parallel_size == rollout_tp * rollout_dp == total GPUs, and
-#   moe_tensor_parallel_size * expert_parallel_size == total GPUs => moe_tp = 1.
+# vLLM rollout MoE: RolloutConfig asserts
+#   expert_parallel_size == tensor_model_parallel_size * data_parallel_size.
+# Rollout data_parallel_size defaults to 1 (not auto-derived), so EP == infer_tp.
+# moe_tensor_parallel_size is trtllm-only and ignored by vLLM.
 gen_moe_tp=${GEN_MOE_TP:-1}
-gen_moe_ep=${GEN_MOE_EP:-$((NNODES * NGPUS_PER_NODE))}
+gen_moe_ep=${GEN_MOE_EP:-${infer_tp}}
 rollout_gpu_mem_util=${ROLLOUT_GPU_MEM_UTIL:-0.6}
 rollout_n=${ROLLOUT_N:-8}
 rollout_max_num_batched_tokens=${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-10240}
