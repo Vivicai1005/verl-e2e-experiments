@@ -1,0 +1,5 @@
+--- a/vllm/model_executor/layers/fused_moe/oracle/unquantized.py
++++ b/vllm/model_executor/layers/fused_moe/oracle/unquantized.py
+@@
+-    return w13_weight.contiguous(), w2_weight.contiguous()
++    return w13_weight, w2_weight
