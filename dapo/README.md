@@ -112,12 +112,10 @@ Constraints to keep in mind on N GPUs:
 ```bash
 cd /workspace/verl-e2e-experiments/dapo
 
-WANDB_MODE=offline \
 EXPERIMENT_NAME=mi350_qwen3_30b_a3b_megatron \
 MODEL_PATH=$HOME/models/Qwen/Qwen3-30B-A3B \
 TRAIN_FILES=$HOME/data/DAPO-Math-17k/data/dapo-math-17k.parquet \
 VAL_FILES=$HOME/data/AIME-2024/data/aime-2024.parquet \
-ALL_OFFLOAD=False \
 bash mi355_qwen3_30b_a3b_megatron_tp1ep8_infertp4.sh
 ```
 
