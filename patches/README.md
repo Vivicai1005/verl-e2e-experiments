@@ -21,7 +21,7 @@ falls back to fuzzy `patch -p1 --fuzz=3` if vllm's line numbers have drifted.
 
 ## Check if a patch is applied
 
-Ask git whether the patch could be *reversed* — if yes, it is already applied:
+Ask whether the patch could be *reversed* — if yes, it is already applied:
 
 ```bash
 cd /workspace/vllm
@@ -32,12 +32,37 @@ git apply --reverse --check ~/verl-e2e-experiments/patches/<name>.patch \
 - `git apply --reverse --check <patch>` succeeds → already applied
 - `git apply --check <patch>` succeeds → not yet applied (can apply forward)
 
+> ⚠️ **Caveat for fuzzy-applied patches.** `git apply` has **no fuzz factor** — it
+> requires the patch's context lines to match the file *exactly*. If `apply.sh`
+> reported `(fuzzy)`, the patch was applied by GNU `patch -p1 --fuzz=3`, which slid
+> the hunk to a drifted offset that `git apply` will no longer recognize. In that
+> case `git apply --reverse --check` reports **"NOT applied" even though it is** — a
+> false negative. Re-check with the same tool that applied it, or just look at the
+> file:
+>
+> ```bash
+> cd /workspace/vllm
+> # same tool, same fuzz, dry run:
+> patch -p1 --reverse --fuzz=3 --dry-run < ~/verl-e2e-experiments/patches/<name>.patch \
+>   && echo "APPLIED" || echo "NOT applied"
+> # or just inspect the changed line(s):
+> git diff --stat path/to/file.py
+> ```
+
 Or just re-run `apply.sh`: `[skip] ... (already applied)` means it is in place,
 `[ok] ...` means it was just applied now. To see all local edits at once:
 
 ```bash
 cd /workspace/vllm && git diff
 ```
+
+> ⚠️ **Re-running after a fuzzy apply.** The `[skip]` guard in `apply.sh` also uses
+> `git apply --reverse --check`, so it suffers the same false negative: a
+> fuzzy-applied patch is **not** detected as already applied on the next run. GNU
+> `patch --forward` still refuses to apply it twice ("previously applied patch
+> detected"), but that returns non-zero, so the script would mislabel it `[FAIL]`.
+> The durable fix is to record the patch from a clean tree so it applies cleanly
+> (see below) — once it applies via `git apply`, the idempotency guard works.
 
 ## Record a new change
 
