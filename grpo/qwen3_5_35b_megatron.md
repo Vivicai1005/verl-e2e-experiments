@@ -35,12 +35,19 @@ hf download Qwen/Qwen3.5-35B-A3B --local-dir $HOME/models/Qwen3.5-35B-A3B
 python3 examples/data_preprocess/geo3k.py --local_save_dir $HOME/data/geo3k
 ```
 
-## 5. Run training
+## 5. Apply vllm patch
+
+```bash
+cd /workspace/vllm
+bash ~/verl-e2e-experiments/patches/apply.sh
+```
+
+## 6. Run training
 
 ```bash
 export WANDB_API_KEY="YOUR_WANDB_API"
 HF_MODEL_PATH=$HOME/models/Qwen3.5-35B-A3B \
-bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh
+bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh trainer.save_freq=-1
 ```
 
 W&B run: https://wandb.ai/wei-cai/verl_grpo_qwen3_5_35b_geo3k?nw=nwuserweicai
