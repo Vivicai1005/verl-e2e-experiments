@@ -26,8 +26,7 @@ docker run -it --name verl --device /dev/kfd --device /dev/dri \
 
 ```bash
 export HF_TOKEN=YOUR_HF_TOKEN
-HF_MODEL_PATH=$HOME/models/Qwen/Qwen3.5-35B-A3B
-hf download Qwen/Qwen3.5-35B-A3B --local-dir $HOME/models/Qwen/Qwen3.5-35B-A3B
+hf download Qwen/Qwen3.5-35B-A3B --local-dir $HOME/models/Qwen3.5-35B-A3B
 ```
 
 ## 4. Prepare the dataset
@@ -40,7 +39,7 @@ python3 examples/data_preprocess/geo3k.py --local_save_dir $HOME/data/geo3k
 
 ```bash
 export WANDB_API_KEY="YOUR_WANDB_API"
-HF_MODEL_PATH=$HOME/models/Qwen/Qwen3.5-35B-A3B \
+HF_MODEL_PATH=$HOME/models/Qwen3.5-35B-A3B \
 bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh
 ```
 
