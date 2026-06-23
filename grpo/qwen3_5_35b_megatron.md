@@ -50,4 +50,17 @@ HF_MODEL_PATH=$HOME/models/Qwen3.5-35B-A3B \
 bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh trainer.save_freq=-1
 ```
 
+To run without wandb logging (console only):
+
+```bash
+HF_MODEL_PATH=$HOME/models/Qwen3.5-35B-A3B \
+bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh trainer.save_freq=-1 trainer.logger=['console']
+```
+
+If enable aiter use:
+
+```bash
+VLLM_ROCM_USE_AITER=1 bash examples/grpo_trainer/run_qwen3_5_35b_megatron.sh
+```
+
 W&B run: https://wandb.ai/wei-cai/verl_grpo_qwen3_5_35b_geo3k?nw=nwuserweicai
